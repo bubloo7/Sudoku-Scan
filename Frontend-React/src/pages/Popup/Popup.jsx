@@ -337,43 +337,62 @@ const Popup = () => {
               //   chrome.storage.sync.set({ board: newBoard }, function () {});
               //   setLoading(false);
               // });
-              chrome.tabs.captureVisibleTab().then((dataUrl) => {
-                console.log(dataUrl, 'dataUrl');
-                const url = 'http://localhost:81/api';
-                fetch(url, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ dataUrl: dataUrl }),
-                })
-                  .then((response) => {
-                    return response.json();
+              try {
+                chrome.tabs.captureVisibleTab().then((dataUrl) => {
+                  console.log(dataUrl, 'dataUrl');
+                  // const url = 'http://localhost:81/api';
+                  const url =
+                    'http://ec2-54-213-214-188.us-west-2.compute.amazonaws.com.:2048/api';
+                  fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dataUrl: dataUrl }),
                   })
-                  .then((data) => {
-                    console.log('api', data);
-                    var newBoard = boardToString(data['board']);
-                    var ansBoard = solve(newBoard, true);
-                    var ansBoard2 = solve(newBoard, false);
-                    if (ansBoard === false) {
-                      setErr('No solution found');
-                      setSolvedBoard([...clearBoard]);
-                    } else if (ansBoard !== ansBoard2) {
-                      console.log('neq');
-                      console.log(ansBoard);
-                      console.log(ansBoard2);
-                      setErr('Multiple solutions found');
-                      setSolvedBoard([...clearBoard]);
-                    } else {
-                      setErr('Board is valid!');
-                      setSolvedBoard(stringToBoard(ansBoard));
-                    }
-                    setBoard(stringToBoard(newBoard));
-                    chrome.storage.sync.set(
-                      { board: newBoard },
-                      function () {}
-                    );
-                    setLoading(false);
-                  });
-              });
+                    .then((response) => {
+                      if (!response.ok) {
+                        console.log('in exception');
+                        window.alert(
+                          'Board not found\n' +
+                            'Advanced Error: ' +
+                            response.status +
+                            ' ' +
+                            response.statusText
+                        );
+                        setLoading(false);
+                        throw new Error('Board not found');
+                      }
+                      return response.json();
+                    })
+                    .then((data) => {
+                      console.log('api', data);
+                      var newBoard = boardToString(data['board']);
+                      var ansBoard = solve(newBoard, true);
+                      var ansBoard2 = solve(newBoard, false);
+                      if (ansBoard === false) {
+                        setErr('No solution found');
+                        setSolvedBoard([...clearBoard]);
+                      } else if (ansBoard !== ansBoard2) {
+                        console.log('neq');
+                        console.log(ansBoard);
+                        console.log(ansBoard2);
+                        setErr('Multiple solutions found');
+                        setSolvedBoard([...clearBoard]);
+                      } else {
+                        setErr('Board is valid!');
+                        setSolvedBoard(stringToBoard(ansBoard));
+                      }
+                      setBoard(stringToBoard(newBoard));
+                      chrome.storage.sync.set(
+                        { board: newBoard },
+                        function () {}
+                      );
+                      setLoading(false);
+                    });
+                });
+              } catch (e) {
+                console.log('in exception');
+                alert('Board not found\nAdvanced details:' + e);
+              }
             }}
             style={{
               width: '70px',
