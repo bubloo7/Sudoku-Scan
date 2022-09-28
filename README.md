@@ -1,2 +1,6 @@
-# Sudoku-Scan
- A chrome extension that can scan and solve sudoku puzzles
+# Sudoku Scan
+Source code for Sudoku Scanner, a chrome extension that can scan and solve sudoku puzzles. You can get the extension on the chrome store [here](https://chrome.google.com/webstore/detail/sudoku-scanner/pgiimbpbjcpmibecjiajmbfjofojofjf?hl=en).
+
+This chrome extension will let you scan and solve sudoku boards quickly and easily! It works on a number of websites like sudoku.com, usdoku.com, NY times Sudoku, and much much more! It can even work for images! Start by pressing the scan button to scan your screen for a sudoku board. You can then press the show button to show the answers! You can also use your mouse and/or keyboard to select a square and fill it in manually. Download the extension and get started today!
+
+The way the extension works is by taking a screenshot of the users current window, identifying where the board is in the user's screen, and then using OCR to read the board. As such, the user must consent to making the contents of their screen be available. The screenshot will only be taken when the user consents by pressing the scan button in the chrome extension and will never run in the background or when the user is unaware of it. The data will never be stored or shared in any shape or form. Privacy is incredibly important and we promise that the only use of the scan feature is to find and identify the sudoku board automatically.
